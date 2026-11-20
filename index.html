@@ -1,0 +1,454 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>خطة سماع المحاضرات</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: one calm centered column, one card per job. Setup screen first, then a lecture-by-lecture tracker. Teal-mist palette with a soft rose for warmth. */
+:root {
+  --bg: #EEF5F4;
+  --surface: #FFFFFF;
+  --ink: #1D3636;
+  --muted: #5A7472;
+  --line: #D3E3E1;
+  --accent: #2B7A74;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #DCEEEB;
+  --rose: #A6475F;
+  --rose-soft: #F7E7EB;
+  --font-display: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+  --font-body: 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1C1C;
+    --surface: #162626;
+    --ink: #E3EFED;
+    --muted: #96B0AD;
+    --line: #26403F;
+    --accent: #5FB8AE;
+    --accent-ink: #0B1F1E;
+    --accent-soft: #1D3836;
+    --rose: #EBA0B2;
+    --rose-soft: #3A2830;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1C1C;
+  --surface: #162626;
+  --ink: #E3EFED;
+  --muted: #96B0AD;
+  --line: #26403F;
+  --accent: #5FB8AE;
+  --accent-ink: #0B1F1E;
+  --accent-soft: #1D3836;
+  --rose: #EBA0B2;
+  --rose-soft: #3A2830;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.75;
+  padding-block: 20px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 460px; margin-inline: auto; display: flex; flex-direction: column; gap: 16px; }
+h1, h2, h3, p { margin: 0; }
+h1, h2 { font-family: var(--font-display); text-wrap: balance; }
+h1 { font-size: 26px; line-height: 1.45; font-weight: 700; }
+h2 { font-size: 22px; line-height: 1.4; font-weight: 700; }
+h3 { font-size: 16px; font-weight: 700; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 15px; }
+.textbtn {
+  background: none; border: 0; padding: 8px 4px; min-height: 40px; cursor: pointer;
+  font: 500 14px/1.4 var(--font-body); color: var(--muted); text-decoration: underline; text-underline-offset: 4px;
+}
+.textbtn:hover { color: var(--ink); }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.muted { color: var(--muted); font-size: 14.5px; }
+
+.verse { background: var(--rose-soft); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.verse q { quotes: none; font-family: var(--font-display); font-weight: 600; font-size: 17px; line-height: 1.9; }
+.verse span { color: var(--rose); font-size: 14px; font-weight: 500; }
+
+.field { display: flex; flex-direction: column; gap: 10px; }
+.stepper { display: flex; align-items: center; gap: 14px; }
+.stepper output { font-family: var(--font-display); font-weight: 700; font-size: 32px; min-width: 2.2ch; text-align: center; font-variant-numeric: tabular-nums; }
+.round {
+  width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--surface); color: var(--accent);
+  font: 700 24px/1 var(--font-display); cursor: pointer; display: grid; place-items: center;
+}
+.round:disabled { opacity: .4; cursor: not-allowed; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+  font: 500 15px/1 var(--font-body); cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+
+.preview { background: var(--accent-soft); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.preview .muted { font-size: 13.5px; }
+
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 50px; padding: 0 18px;
+  border-radius: 14px; border: 1.5px solid transparent; font: 700 16px/1.3 var(--font-body); cursor: pointer; text-decoration: none;
+}
+.btn-main { background: var(--accent); color: var(--accent-ink); }
+.btn-line { background: transparent; border-color: var(--accent); color: var(--accent); }
+.btn.is-off { border-style: dashed; border-color: var(--muted); color: var(--muted); cursor: default; }
+.btn svg { flex: none; }
+
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 10px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+.stat b { font-family: var(--font-display); font-size: 24px; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.stat small { color: var(--muted); font-size: 12.5px; line-height: 1.4; }
+.target { text-align: center; font-size: 14.5px; color: var(--muted); }
+.target.is-met { color: var(--accent); font-weight: 700; }
+
+.tag { align-self: flex-start; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 13px; padding: 2px 12px; border-radius: 999px; }
+.step { display: flex; flex-direction: column; gap: 12px; padding-top: 14px; border-top: 1px solid var(--line); }
+.step-h { display: flex; align-items: center; gap: 10px; }
+.mark { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); display: grid; place-items: center; font: 700 14px/1 var(--font-display); flex: none; }
+.step.is-done .mark { background: var(--accent); color: var(--accent-ink); }
+.step.is-done h3 { color: var(--muted); font-weight: 500; }
+.actions { display: grid; gap: 10px; }
+
+.dots { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.dots li { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font: 700 14px/1 var(--font-display); border: 1.5px solid var(--line); color: var(--muted); font-variant-numeric: tabular-nums; }
+.dots li.done { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.dots li.was { background: var(--accent-soft); border-color: var(--accent-soft); color: var(--accent); }
+.dots li.now { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.dots-note { font-size: 13px; color: var(--muted); }
+
+.center { text-align: center; align-items: center; }
+.dua { font-family: var(--font-display); font-weight: 600; font-size: 18px; line-height: 1.9; }
+
+.toast {
+  position: fixed; inset-inline: 0; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; justify-content: center; pointer-events: none;
+}
+.toast p { max-width: 420px; background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 14px; font-weight: 500; font-size: 15px; line-height: 1.6; opacity: 0; transform: translateY(8px); transition: opacity .25s, transform .25s; }
+.toast.show p { opacity: 1; transform: none; }
+
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .toast p { transition: none; } }
+</style>
+
+<div id="app" class="wrap" dir="rtl" lang="ar"></div>
+<div id="toast" class="toast" dir="rtl" lang="ar" role="status" aria-live="polite"><p></p></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ===== إعدادات تقدري تعدليها ===== */
+  var COURSE_END = '2026-12-04'; // آخر يوم في الدورة (سنة-شهر-يوم)
+  var QUIZ_MIN = 10;             // الوقت التقريبي لكل اختبار بالدقايق
+  // حطي هنا لينك كل محاضرة على يوتيوب (video) ولينك الاختبار (quiz)، وعدلي المدة بالدقايق (minutes)
+  var LECTURES = [
+    { n: 1,  title: 'المحاضرة الأولى',   minutes: 60, video: '', quiz: '' },
+    { n: 2,  title: 'المحاضرة الثانية',  minutes: 60, video: '', quiz: '' },
+    { n: 3,  title: 'المحاضرة الثالثة',  minutes: 60, video: '', quiz: '' },
+    { n: 4,  title: 'المحاضرة الرابعة',  minutes: 60, video: '', quiz: '' },
+    { n: 5,  title: 'المحاضرة الخامسة',  minutes: 60, video: '', quiz: '' },
+    { n: 6,  title: 'المحاضرة السادسة',  minutes: 60, video: '', quiz: '' },
+    { n: 7,  title: 'المحاضرة السابعة',  minutes: 60, video: '', quiz: '' },
+    { n: 8,  title: 'المحاضرة الثامنة',  minutes: 60, video: '', quiz: '' },
+    { n: 9,  title: 'المحاضرة التاسعة',  minutes: 60, video: '', quiz: '' },
+    { n: 10, title: 'المحاضرة العاشرة',  minutes: 60, video: '', quiz: '' }
+  ];
+  var HOUR_OPTIONS = [0.5, 1, 1.5, 2, 3, 4];
+
+  // متوسط تقريبي لوقت المحاضرة بالدقايق، بيُستخدم في الحسبة بس ومش بيظهر للطالبة
+  var AVG_MIN = 80;
+  LECTURES.forEach(function (l) { l.minutes = AVG_MIN; });
+
+  // لينك الدرايف بتاع محتوى الدورة
+  var DRIVE = 'https://drive.google.com/drive/folders/1cPEGv622TDcSdVbHXjGtQTxw-K_yZrpr';
+  // رقم المحاضرة: [لينك اليوتيوب، لينك اختبار النساء من 251 لـ 550]
+  var LINKS = {
+    1: ['https://youtu.be/IkvN1Idcqxs', 'https://forms.gle/c4w8wypKSavhJxf88'],
+    2: ['https://youtu.be/1bfvGW1ZoAw', 'https://forms.gle/r9MwWJUpjtXsxUh47'],
+    3: ['https://youtu.be/bMmI3LH1nRE', 'https://forms.gle/Ngo7fDmJAGNDr9JE6'],
+    4: ['https://youtu.be/JDwk-RRGYOo', 'https://forms.gle/4v6r36hXMBx14c9d7'],
+    5: ['https://youtu.be/l5eelVBeZHg', 'https://forms.gle/j984o6r4bF3UbNGo6'],
+    6: ['https://youtu.be/IaJVFfN_MiM', 'https://forms.gle/w6uPKwkNQz1m5ECy9'],
+    7: ['https://youtu.be/gtcDUMg4hX8', 'https://forms.gle/e3biFW9HFC2jZ8Qn7'],
+    8: ['https://youtu.be/A8dfGGLzh2U', 'https://forms.gle/yQpbg98kX1gxHRou5'],
+    9: ['https://youtu.be/Q5qyGcYszsc', '']
+  };
+  LECTURES.forEach(function (l) {
+    var k = LINKS[l.n];
+    if (k) { l.video = k[0]; l.quiz = k[1]; }
+  });
+  function driveBtn() {
+    return '<a class="btn btn-line" href="' + DRIVE + '" target="_blank" rel="noopener">محتوى الدورة على درايف ' + EXT + '</a>';
+  }
+
+  /* ===== أدوات ===== */
+  var KEY = 'lectures-plan-v2';
+  var state = { setup: false, heard: 0, hours: 1.5, steps: {}, doneOn: {} };
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (raw) {
+      var p = JSON.parse(raw);
+      if (p && typeof p === 'object') { state = Object.assign(state, p); }
+    }
+  } catch (e) {}
+  state.heard = Math.min(LECTURES.length - 1, Math.max(0, parseInt(state.heard, 10) || 0));
+  state.hours = parseFloat(state.hours) || 1.5;
+  if (!state.steps || typeof state.steps !== 'object') { state.steps = {}; }
+  if (!state.doneOn || typeof state.doneOn !== 'object') { state.doneOn = {}; }
+
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function $(id) { return document.getElementById(id); }
+  function nA(n) { return Number(n).toLocaleString('ar-EG'); }
+
+  function fmtH(h) {
+    var m = Math.ceil(h * 60 / 15) * 15;
+    var hr = Math.floor(m / 60);
+    var mi = m % 60;
+    if (hr === 0) { return mi === 15 ? 'ربع ساعة' : (mi === 30 ? 'نص ساعة' : 'تلات تربع ساعة'); }
+    var s = hr === 1 ? 'ساعة' : (hr === 2 ? 'ساعتين' : nA(hr) + ' ساعات');
+    if (mi === 15) { s += ' وربع'; } else if (mi === 30) { s += ' ونص'; } else if (mi === 45) { s += ' وتلات تربع'; }
+    return s;
+  }
+
+  function lecWord(n) { return n === 1 ? 'محاضرة واحدة' : (n === 2 ? 'محاضرتين' : nA(n) + ' محاضرات'); }
+
+  function daysLeft() {
+    var now = new Date();
+    var t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var parts = COURSE_END.split('-').map(Number);
+    var end = new Date(parts[0], parts[1] - 1, parts[2]);
+    return Math.max(1, Math.round((end - t0) / 86400000));
+  }
+  function todayKey() {
+    var n = new Date();
+    return n.getFullYear() + '-' + (n.getMonth() + 1) + '-' + n.getDate();
+  }
+
+  function remaining() { return LECTURES.slice(state.heard); }
+  function isDone(n) { var s = state.steps[n]; return !!(s && s.quiz); }
+
+  function plan(b, h) {
+    var list = LECTURES.slice(LECTURES.length - b);
+    var mins = 0;
+    list.forEach(function (l) { mins += l.minutes + QUIZ_MIN; });
+    var dl = daysLeft();
+    return { mins: mins, dl: dl, needed: mins / 60 / dl, daysNeeded: Math.ceil(mins / 60 / h) };
+  }
+
+  var CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var EXT = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function linkBtn(url, label) {
+    if (url) { return '<a class="btn btn-line" href="' + url + '" target="_blank" rel="noopener">' + label + ' ' + EXT + '</a>'; }
+    return '<span class="btn btn-line is-off">اللينك هيتضاف قريب</span>';
+  }
+
+  var toastTimer;
+  function toast(msg) {
+    var box = $('toast');
+    box.querySelector('p').textContent = msg;
+    box.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { box.classList.remove('show'); }, 3400);
+  }
+
+  /* ===== شاشة البداية ===== */
+  function setupHTML() {
+    var chips = HOUR_OPTIONS.map(function (h) {
+      return '<button type="button" class="chip" id="chip-' + String(h).replace('.', '_') + '" data-act="hours" data-v="' + h + '" aria-pressed="false">' + fmtH(h) + '</button>';
+    }).join('');
+    return '' +
+      '<div class="top"><span class="brand">خطة السماع</span></div>' +
+      '<section class="card">' +
+        '<h1>أهلًا بيكِ، لسه في وقت تلحقي كل حاجة</h1>' +
+        '<p>فاضل على نهاية الدورة أسبوعين بس، وهنظبط سوا خطة خفيفة تسمعي بيها كل المحاضرات من غير ضغط. جاوبي على سؤالين وهتلاقي خطتك جاهزة.</p>' +
+        '<div class="verse"><q>مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ</q><span>رواه مسلم</span></div>' +
+      '</section>' +
+      '<section class="card">' +
+        '<div class="field"><h3 id="q1">سمعتي لحد أنهي محاضرة؟</h3>' +
+          '<p class="muted">اكتبي رقم آخر محاضرة سمعتيها، ولو لسه ما بدأتيش سيبيها صفر.</p>' +
+          '<div class="stepper" role="group" aria-labelledby="q1">' +
+            '<button type="button" class="round" id="minus" data-act="minus" aria-label="أقل">−</button>' +
+            '<output id="count" aria-live="polite"></output>' +
+            '<button type="button" class="round" id="plus" data-act="plus" aria-label="أكتر">+</button>' +
+          '</div>' +
+          '<p class="muted" id="startnote"></p>' +
+        '</div>' +
+        '<div class="field"><h3>كام ساعة تقدري تسمعي في اليوم؟</h3><div class="chips" id="chips">' + chips + '</div></div>' +
+      '</section>' +
+      '<section class="preview" aria-live="polite"><h3>خطتك</h3><p id="ptext"></p><p class="muted" id="pnote"></p></section>' +
+      '<button type="button" class="btn btn-main" data-act="start">ابدئي أول محاضرة</button>';
+  }
+
+  function refreshSetup() {
+    var hd = state.heard, b = LECTURES.length - hd, h = state.hours, p = plan(b, h);
+    $('count').textContent = nA(hd);
+    $('minus').disabled = hd <= 0;
+    $('plus').disabled = hd >= LECTURES.length - 1;
+    $('startnote').textContent = hd === 0
+      ? 'يعني باقي عليكِ ' + lecWord(b) + '، وهنبدأ من المحاضرة الأولى.'
+      : 'يعني باقي عليكِ ' + lecWord(b) + '، وهنبدأ من المحاضرة رقم ' + nA(hd + 1) + '.';
+    HOUR_OPTIONS.forEach(function (o) {
+      var c = $('chip-' + String(o).replace('.', '_'));
+      if (c) { c.setAttribute('aria-pressed', o === h ? 'true' : 'false'); }
+    });
+    var txt;
+    if (p.daysNeeded < p.dl) {
+      txt = 'بالوقت ده هتخلصي كل المحاضرات في حوالي ' + nA(p.daysNeeded) + ' يوم من ' + nA(p.dl) + ' يوم باقيين على نهاية الدورة. يعني هيفضل ليكِ أيام للمراجعة إن شاء الله.';
+    } else if (p.daysNeeded === p.dl) {
+      txt = 'وقتك مظبوط على قد الميعاد بالظبط، فالمهم تلتزمي كل يوم ومتفوتيش ولا يوم إن شاء الله.';
+    } else {
+      txt = 'علشان تلحقي الميعاد محتاجة حوالي ' + fmtH(p.needed) + ' في اليوم. لو تقدري تزودي الوقت شوية يبقى أحسن، ولو مش هتقدري ابدئي برضه، وكل يوم هتقربي أكتر.';
+    }
+    $('ptext').textContent = txt;
+    $('pnote').textContent = 'الحسبة تقريبية على أساس متوسط وقت المحاضرات والاختبارات.';
+  }
+
+  /* ===== شاشة المحاضرة ===== */
+  function mainHTML() {
+    var list = remaining();
+    var cur = list.filter(function (l) { return !isDone(l.n); })[0];
+    var left = list.filter(function (l) { return !isDone(l.n); }).length;
+    var dl = daysLeft();
+    var tk = todayKey();
+    var doneToday = list.filter(function (l) { return state.doneOn[l.n] === tk; }).length;
+    var target = Math.ceil((left + doneToday) / dl);
+    var met = doneToday >= target;
+    var s = state.steps[cur.n] || {};
+    var first = state.heard;
+    var any = list.some(function (l) { var x = state.steps[l.n]; return x && (x.listen || x.quiz); });
+
+    var step1 = s.listen
+      ? '<div class="step is-done"><div class="step-h"><span class="mark">' + CHECK + '</span><h3>سمعتي المحاضرة</h3></div></div>'
+      : '<div class="step"><div class="step-h"><span class="mark">١</span><h3>اسمعي المحاضرة</h3></div>' +
+          '<div class="actions">' + linkBtn(cur.video, 'افتحي المحاضرة على يوتيوب') +
+          '<button type="button" class="btn btn-main" data-act="listen">خلّصت المحاضرة</button></div></div>';
+
+    var step2 = s.listen
+      ? '<div class="step"><div class="step-h"><span class="mark">٢</span><h3>اختبار المحاضرة</h3></div>' +
+          '<p class="muted">اختبري دلوقتي علشان المعلومة تثبت، وبعدين علّمي إنك خلصتي.</p>' +
+          '<div class="actions">' + linkBtn(cur.quiz, 'افتحي الاختبار') +
+          '<button type="button" class="btn btn-main" data-act="quiz">خلّصت الاختبار</button></div></div>'
+      : '';
+
+    var dots = LECTURES.map(function (l) {
+      var cls = l.n <= first ? 'was' : (isDone(l.n) ? 'done' : (l.n === cur.n ? 'now' : ''));
+      var inner = (cls === 'done' || cls === 'was') ? CHECK : nA(l.n);
+      return '<li class="' + cls + '" aria-label="' + l.title + '">' + inner + '</li>';
+    }).join('');
+
+    return '' +
+      '<div class="top"><span class="brand">خطة السماع</span><button type="button" class="textbtn" data-act="edit">تعديل الخطة</button></div>' +
+      '<div class="stats">' +
+        '<div class="stat"><b>' + nA(left) + '</b><small>محاضرات باقية</small></div>' +
+        '<div class="stat"><b>' + nA(dl) + '</b><small>يوم باقي</small></div>' +
+        '<div class="stat"><b>' + nA(target) + '</b><small>هدف النهاردة</small></div>' +
+      '</div>' +
+      '<p class="target' + (met ? ' is-met' : '') + '">' + (met ? 'هدف النهاردة خلص، ما شاء الله' : 'خلصتي ' + nA(doneToday) + ' من ' + nA(target) + ' النهاردة') + '</p>' +
+      '<section class="card">' +
+        '<span class="tag">دلوقتي</span>' +
+        '<div><h2>' + cur.title + '</h2><p class="muted">محاضرة ' + nA(cur.n) + ' من ' + nA(LECTURES.length) + '</p></div>' +
+        step1 + step2 +
+      '</section>' +
+      (any ? '<button type="button" class="textbtn" data-act="undo">تراجع عن آخر خطوة</button>' : '') +
+      '<section class="card"><h3>المحاضرات</h3><ol class="dots">' + dots + '</ol>' +
+        '<p class="dots-note">وقتك المتاح: ' + fmtH(state.hours) + ' في اليوم</p></section>' +
+      '<section class="card"><h3>ملفات الدورة</h3><p class="muted">كل محتوى الدورة في مكان واحد.</p>' + driveBtn() + '</section>';
+  }
+
+  function doneHTML() {
+    return '' +
+      '<div class="top"><span class="brand">خطة السماع</span></div>' +
+      '<section class="card center">' +
+        '<h1>ما شاء الله، خلصتي كل المحاضرات</h1>' +
+        '<p>بارك الله فيكِ على صبرك والتزامك، وربنا يكتب لكِ أجر كل دقيقة سمعتيها.</p>' +
+        '<div class="verse"><q>اللَّهُمَّ انْفَعْنَا بِمَا عَلَّمْتَنَا، وَعَلِّمْنَا مَا يَنْفَعُنَا، وَزِدْنَا عِلْمًا</q></div>' +
+      '</section>' +
+      '<section class="card"><h3>ملفات الدورة</h3><p class="muted">راجعي المحتوى وقت ما تحبي.</p>' + driveBtn() + '</section>' +
+      '<button type="button" class="textbtn" data-act="undo">تراجع عن آخر خطوة</button>';
+  }
+
+  function render(top) {
+    var app = $('app');
+    if (!state.setup) {
+      app.innerHTML = setupHTML();
+      refreshSetup();
+    } else {
+      var finished = remaining().every(function (l) { return isDone(l.n); });
+      app.innerHTML = finished ? doneHTML() : mainHTML();
+    }
+    if (top) { window.scrollTo(0, 0); }
+  }
+
+  /* ===== التفاعل ===== */
+  function undo() {
+    var order = [];
+    remaining().forEach(function (l) { order.push([l.n, 'listen']); order.push([l.n, 'quiz']); });
+    for (var i = order.length - 1; i >= 0; i--) {
+      var n = order[i][0], k = order[i][1];
+      var s = state.steps[n];
+      if (s && s[k]) {
+        s[k] = false;
+        if (k === 'quiz') { delete state.doneOn[n]; }
+        return;
+      }
+    }
+  }
+
+  var PRAISE = [
+    'ما شاء الله، كملتي المحاضرة رقم ',
+    'بارك الله فيكِ، خلصتي المحاضرة رقم ',
+    'تقبل الله منكِ، خلصتي المحاضرة رقم '
+  ];
+
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-act]');
+    if (!t || t.disabled) { return; }
+    var a = t.getAttribute('data-act');
+    var list, cur;
+    if (a === 'minus') { state.heard = Math.max(0, state.heard - 1); save(); refreshSetup(); }
+    else if (a === 'plus') { state.heard = Math.min(LECTURES.length - 1, state.heard + 1); save(); refreshSetup(); }
+    else if (a === 'hours') { state.hours = parseFloat(t.getAttribute('data-v')); save(); refreshSetup(); }
+    else if (a === 'start') { state.setup = true; save(); render(true); }
+    else if (a === 'edit') { state.setup = false; save(); render(true); }
+    else if (a === 'listen' || a === 'quiz') {
+      list = remaining();
+      cur = list.filter(function (l) { return !isDone(l.n); })[0];
+      if (!cur) { return; }
+      var s = state.steps[cur.n] || (state.steps[cur.n] = {});
+      if (a === 'listen') {
+        s.listen = true;
+        toast('جميل، دلوقتي الاختبار علشان المعلومة تثبت');
+      } else {
+        s.listen = true;
+        s.quiz = true;
+        state.doneOn[cur.n] = todayKey();
+        toast(PRAISE[cur.n % PRAISE.length] + nA(cur.n));
+      }
+      save();
+      render(a === 'quiz');
+    }
+    else if (a === 'undo') { undo(); save(); render(false); }
+  });
+
+  render(false);
+})();
+</script>
+
+</body></html>
